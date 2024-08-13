@@ -1,21 +1,24 @@
 #include <Kalman.h>
 
-Kalman::Kalman(){
+Kalman::Kalman()
+{
     _rate = 0;
     _angle = 0;
     _bias = 0;
 
-    // determined with matlab simulations 
-    _Q_angle = 0.002;  // original: 0.001
-    _Q_bias = 0.01; // original: 0.003
+    // determined with matlab simulations
+    _Q_angle = 0.002;   // original: 0.001
+    _Q_bias = 0.01;     // original: 0.003
     _R_measure = 0.001; // original: 0.03
 
-    _P[0][0] = 0; _P[0][1] = 0;
-    _P[1][0] = 0; _P[1][1] = 0;
+    _P[0][0] = 0;
+    _P[0][1] = 0;
+    _P[1][0] = 0;
+    _P[1][1] = 0;
 }
 
-
-float Kalman::getAngle(float newAngle,  float newRate, float dt) {
+float Kalman::getAngle(float newAngle, float newRate, float dt)
+{
 
     // prediction step
     _rate = newRate - _bias;
@@ -26,15 +29,15 @@ float Kalman::getAngle(float newAngle,  float newRate, float dt) {
     Serial.print("_angle = "); Serial.println(_angle, 5);
     */
     // update estimation error covariance - project the error covariance ahead
-    _P[0][0] += dt* (dt * _P[1][1] - _P[0][1] - _P[1][0] + _Q_angle);
+    _P[0][0] += dt * (dt * _P[1][1] - _P[0][1] - _P[1][0] + _Q_angle);
     _P[0][1] -= dt * _P[1][1];
     _P[1][0] -= dt * _P[1][1];
     _P[1][1] += _Q_bias * dt;
 
     // measurement update (update step)
-    float y = newAngle - _angle; // difference between mag reading and dead reckoning (innovation)
-    float S = _P[0][0] + _R_measure; // innovation covariance 
-    float K[2]; // kalman gain - 2x1 vector
+    float y = newAngle - _angle;     // difference between mag reading and dead reckoning (innovation)
+    float S = _P[0][0] + _R_measure; // innovation covariance
+    float K[2];                      // kalman gain - 2x1 vector
     K[0] = _P[0][0] / S;
     K[1] = _P[1][0] / S;
     /*
@@ -69,11 +72,9 @@ float Kalman::getAngle(float newAngle,  float newRate, float dt) {
     Serial.print("P11: "); Serial.println(_P[1][1], 5);
     */
     return _angle;
-
-
 }
 
-
-void Kalman::setAngle(float angle){
+void Kalman::setAngle(float angle)
+{
     _angle = angle;
 }

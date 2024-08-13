@@ -3,7 +3,8 @@
 
 #include <Arduino.h>
 
-class Valve {
+class Valve
+{
 public:
   Valve(const int valvePin, const int triggerPin, const int autoPin, const int autoFreq);
   void open();
@@ -15,7 +16,7 @@ public:
 
   bool isAutoOn() const;
   bool isValveOpen() const;
-  
+
   void setAutoOn(bool autoOn);
 
 private:

@@ -6,9 +6,6 @@
 #include <SPI.h>
 #include <SD.h>
 
-
-
-
 unsigned long currentTime = 0;
 
 float zStateVector[2] = {0, 0};
@@ -28,7 +25,7 @@ int autoFreq = 20;
 
 Valve Zminus(9, 2, 4, autoFreq);
 Valve Zplus(10, 3, 5, autoFreq);
-Valve* Valves[2] = {&Zplus, &Zminus};
+Valve *Valves[2] = {&Zplus, &Zminus};
 
 Axis zAxis(Valves);
 
@@ -36,15 +33,17 @@ const int chipSelect = 4;
 File dataFile;
 String fileName;
 
-
-void setup() {
+void setup()
+{
   Serial.begin(9600);
-  while (!Serial){
+  while (!Serial)
+  {
     ; // wait for the serial port to open
   }
   Serial.print("Initialising SD Card...");
 
-  if (!SD.begin(chipSelect)){
+  if (!SD.begin(chipSelect))
+  {
     Serial.println("Initialization failed");
     return;
   }
@@ -56,17 +55,18 @@ void setup() {
   dataFile = SD.open(fileName, FILE_WRITE);
 
   // if the file opened then write to it
-  if (dataFile){
+  if (dataFile)
+  {
     Serial.print("Writing to ");
     Serial.println(fileName);
     dataFile.print("Time,omegaZ,Throttle"); // writing CSV header
     dataFile.close();
   }
-  else{
+  else
+  {
     Serial.print("Error: Could not open ");
     Serial.println(fileName);
   }
-
 
   Wire.setClock(400000);
   Wire.begin();
@@ -81,7 +81,8 @@ void setup() {
   pidZ.SetOutputLimits(-100, 100);
 }
 
-void loop() {
+void loop()
+{
   currentTime = millis();
   imu.measure(currentTime);
 
@@ -100,10 +101,10 @@ void loop() {
   Serial.print(" Throttle: ");
   Serial.println(throttleZ);
 
-
   // logging data to SD card
   dataFile = SD.open(fileName, FILE_WRITE);
-  if (dataFile){
+  if (dataFile)
+  {
     dataFile.print(currentTime);
     dataFile.print(",");
     dataFile.print(omegaZ);
@@ -112,7 +113,8 @@ void loop() {
     dataFile.flush(); // make sure data is written to SD card
     dataFile.close(); // close file after writing
   }
-  else{
+  else
+  {
     Serial.println("Error: Could not write to file");
   }
 

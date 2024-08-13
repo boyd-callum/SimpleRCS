@@ -5,22 +5,22 @@
 #include <Valve.h>
 #include <PID_v1.h>
 
-class Axis {
+class Axis
+{
 public:
-    Axis(Valve* valveArray[2]);
+    Axis(Valve *valveArray[2]);
 
     void initalisePID(float Kp, float Ki, float Kd);
-    void updateStateVector(float (& _axisStateVector) [2] );
+    void updateStateVector(float (&_axisStateVector)[2]);
 
     void setThrottle(int throttle, unsigned long currentTime);
 
 private:
-    Valve* _axisValves[2];
+    Valve *_axisValves[2];
     float _axisStateVector[2];
     double _PIDInput, _PIDOutput, _PIDSetpoint;
 
     PID _axisPID;
-
 };
 
 #endif
